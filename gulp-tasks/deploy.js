@@ -6,6 +6,7 @@ var RSync = require('rsync');
 var glob = require('globule');
 var mkdirp = require('mkdirp');
 var gutil = require('gulp-util');
+var exec = require('child_process').exec;
 var runSequence = require('run-sequence');
 
 var EXCLUDE_FILE = './scratch/exclude.txt';
@@ -32,13 +33,20 @@ gulp.task('deploy:stage', function(cb) {
     mkdirp.sync(dest);
     copiesInProgress++;
     rsync.execute(function(error, code, cmd) {
-      copiesInProgress--;
-      if (code === 0) {
-        gutil.log('Finished', 'Copying files to CitC', lang);
+      if (code !== 0) {
+        return cb(error);
       }
-      if (copiesInProgress === 0) {
-        cb();
-      }
+      var devsiteStage = 'sleep 20';
+      gutil.log('Starting', 'Staging Content', lang);
+      exec(devsiteStage, function(err) {
+        copiesInProgress--;
+        if (err) {
+          return cb(err);
+        }
+        if (copiesInProgress === 0) {
+          cb();
+        }
+      });
     });
     
   });
