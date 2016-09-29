@@ -66,9 +66,9 @@ gulp.task('clean', function() {
   gutil.log(' ', 'Deleted', gutil.colors.magenta(deletedFiles.length + ' files'));
 });
 
-gulp.task('deploy', function(cb) {
-  runSequence('clean','build', 'test', cb);
-});
+// gulp.task('deploy', function(cb) {
+//   runSequence('clean','build', 'test', cb);
+// });
 
 gulp.task('presubmit', function(cb) {
   runSequence('clean', 'test', cb);
